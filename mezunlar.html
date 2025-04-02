@@ -1,0 +1,131 @@
+<!-- Mezunlar Bölümü -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Mezunlarımızdan</h2>
+        
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2"></button>
+            </div>
+
+            <!-- Slides -->
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="testimonial-card text-center p-4">
+                                <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" alt="Mezun">
+                                <div class="rating mb-2">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </div>
+                                <h5>Ahmet Yılmaz</h5>
+                                <p class="text-muted">2022 Mezunu · Boğaziçi Üniversitesi</p>
+                                <blockquote class="blockquote">
+                                    "Ata Akademi'de aldığım eğitim sayesinde sadece akademik değil, sosyal anlamda da kendimi geliştirme fırsatı buldum. Özellikle proje tabanlı çalışmalar kariyer hedeflerime ışık tuttu."
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="testimonial-card text-center p-4">
+                                <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" alt="Mezun">
+                                <div class="rating mb-2">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </div>
+                                <h5>Elif Demir</h5>
+                                <p class="text-muted">2021 Mezunu · Tıp Fakültesi</p>
+                                <blockquote class="blockquote">
+                                    "Rehberlik biriminin sürekli destek olması ve bireysel çalışma programları sayesinde hedeflediğim tıp fakültesine yerleştim. Ata Akademi ikinci ailem gibiydi."
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="testimonial-card text-center p-4">
+                                <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" alt="Mezun">
+                                <div class="rating mb-2">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
+                                </div>
+                                <h5>Mehmet Kaya</h5>
+                                <p class="text-muted">2020 Mezunu · Yüksek Lisans Öğrencisi</p>
+                                <blockquote class="blockquote">
+                                    "Akademik kadronun deneyimi ve güncel eğitim metodları sayesinde üniversiteye çok iyi bir hazırlık yaptım. Mezun olduktan sonra bile danışabileceğim bir kurum."
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Önceki</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Sonraki</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<style>
+.testimonial-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.carousel-indicators button {
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50%;
+    background-color: #007bff !important;
+}
+
+blockquote {
+    font-style: italic;
+    color: #555;
+}
+
+.rating {
+    font-size: 1.2rem;
+}
+</style>
+
+<script>
+// Otomatik dönüş ayarı
+const myCarousel = document.getElementById('testimonialCarousel')
+const carousel = new bootstrap.Carousel(myCarousel, {
+  interval: 7000,
+  wrap: true,
+  keyboard: false
+})
+</script>
