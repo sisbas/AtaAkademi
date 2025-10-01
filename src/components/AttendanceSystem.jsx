@@ -117,26 +117,58 @@ const AttendanceSystem = () => {
   };
 
   const downloadCSV = () => {
+    if (!selectedClass) {
+      setMessage({ type: 'error', text: 'Lütfen önce bir sınıf seçin.' });
+      return;
+    }
+
     const classStudents = students[selectedClass] || [];
     const className = classes.find(c => c.id === selectedClass)?.name || selectedClass;
     const lessonCount = getLessonCount();
-    
-    let csv = `Sınıf:,${className}\nTarih:,${selectedDate}\n\n`;
-    csv += 'Öğrenci Adı,' + Array.from({ length: lessonCount }, (_, i) => `${i + 1}. Ders`).join(',') + '\n';
-    
-    classStudents.forEach(student => {
-      const row = [student.name];
-      for (let i = 1; i <= lessonCount; i++) {
-        row.push(attendance[`${student.id}-${i}`] || '-');
-      }
-      csv += row.join(',') + '\n';
+
+    if (lessonCount === 0) {
+      setMessage({ type: 'error', text: 'Seçilen tarih için ders tanımlanmamış.' });
+      return;
+    }
+
+    if (classStudents.length === 0) {
+      setMessage({ type: 'warning', text: 'Bu sınıfa kayıtlı öğrenci bulunmuyor.' });
+      return;
+    }
+
+    const escapeCell = (value) => `"${String(value).replace(/"/g, '""')}"`;
+
+    const headerRows = [
+      [escapeCell('Sınıf:'), escapeCell(className)],
+      [escapeCell('Tarih:'), escapeCell(selectedDate)],
+      []
+    ];
+
+    const lessonsHeader = ['Öğrenci Adı', ...Array.from({ length: lessonCount }, (_, i) => `${i + 1}. Ders`)];
+    const studentRows = classStudents.map((student) => {
+      const statuses = Array.from({ length: lessonCount }, (_, i) => attendance[`${student.id}-${i + 1}`] || '-');
+      return [student.name, ...statuses];
     });
 
+    const csv = [
+      ...headerRows,
+      lessonsHeader.map(escapeCell),
+      ...studentRows.map((row) => row.map(escapeCell))
+    ]
+      .map((row) => row.join(','))
+      .join('\n');
+
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `Yoklama_${className}_${selectedDate}.csv`;
+    link.href = url;
+    link.setAttribute('download', `Yoklama_${className.replace(/\s+/g, '-')}_${selectedDate}.csv`);
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setMessage({ type: 'success', text: 'Yoklama dosyanız indirildi.' });
   };
 
   const getAbsenceLimit = (classId) => {
