@@ -1,141 +1,19 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ata Akademi</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Özel Stil -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ata Akademi Yoklama Sistemi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css" />
     <style>
-        .navbar { border-bottom: 3px solid #007bff; }
-        .footer { background-color: #f8f9fa; padding: 2rem 0; }
-        .card { transition: transform 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        /* Çoklu dropdown düzenlemesi */
-        .dropdown-menu .dropdown-menu { 
-            left: 100%;
-            top: 0;
-            margin-top: -6px;
-            margin-left: .125rem;
-        }
-        .dropdown-item { position: relative; }
-        @media (min-width: 992px) {
-            .dropdown:hover > .dropdown-menu {
-                display: block;
-            }
-        }
+      body {
+        margin: 0;
+        background: linear-gradient(135deg, #eff6ff, #e0e7ff);
+      }
     </style>
-</head>
-<body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <a class="navbar-brand" href="/">Ata Akademi</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <!-- Kurumsal Menü -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        Kurumsal
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/Kurumsal/kurucumuzdan/1">Başkandan</a></li>
-                        <li><a class="dropdown-item" href="/Kurumsal/kurum-mudurunden/2">Müdürümüzden</a></li>
-                        <li><a class="dropdown-item" href="/Kurumsal/tarihce/3">Tarihçe</a></li>
-                        <li><a class="dropdown-item" href="/Kurumsal/misyon-vizyon/4">Misyon & Vizyon</a></li>
-                        <li><a class="dropdown-item" href="/Kurumsal/kadromuz">Kadromuz</a></li>
-                    </ul>
-                </li>
-
-                <!-- Akademi Menü -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        Akademi
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown dropend">
-                            <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                Birimler
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Neşet Ertaş Kültürevi</a></li>
-                                <li><a class="dropdown-item" href="#">Kayışdağı Lions Ataevi</a></li>
-                                <li><a class="dropdown-item" href="#">Kayışdağı Gençlik Merkezi</a></li>
-                                <li><a class="dropdown-item" href="#">Mustafa Kemal Ataevi</a></li>
-                                <li><a class="dropdown-item" href="#">Örnek Ataevi</a></li>
-                                <li><a class="dropdown-item" href="#">Mevlana Ataevi</a></li>
-                            </ul>
-                        </li>
-                        <li><a class="dropdown-item" href="/Sariyer-Akademi/akademide-yasam/8">Akademi</a></li>
-                        <li class="dropdown dropend">
-                            <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                Bölümler
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">YKS</a></li>
-                                <li><a class="dropdown-item" href="#">LGS</a></li>
-                                <li><a class="dropdown-item" href="#">YDS</a></li>
-                                <li><a class="dropdown-item" href="#">Güzel Sanatlar Hazırlık</a></li>
-                                <li><a class="dropdown-item" href="#">Yabancı Dil Kursları</a></li>
-                            </ul>
-                        </li>
-                        <li><a class="dropdown-item" href="/Sariyer-Akademi/basarilarimiz/10">Başarılar</a></li>
-                        <li><a class="dropdown-item" href="/mezunlar.html">Mezunlar</a></li>
-                    </ul>
-                </li>
-
-                <!-- Diğer Linkler -->
-                <li class="nav-item"><a class="nav-link" href="/Etkinlikler">Etkinlikler</a></li>
-                <li class="nav-item"><a class="nav-link" href="/Haberler">Haberler</a></li>
-                <li class="nav-item"><a class="nav-link" href="/Iletisim">İletişim</a></li>
-                <li class="nav-item"><a class="nav-link" href="/sinavsonuc">Ön Başvuru</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-
-<!-- İçerik Alanı -->
-<main class="container my-5">
-    <!-- ... (içerik kısmı aynı kalacak) ... -->
-</main>
-
-<!-- Footer -->
-<footer class="footer mt-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h5>İletişim</h5>
-                <ul class="list-unstyled">
-                    <li>Adres: [Adres Bilgileri]</li>
-                    <li>Telefon: [Telefon Numarası]</li>
-                    <li>E-posta: [E-posta Adresi]</li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Hızlı Linkler</h5>
-                <ul class="list-unstyled">
-                    <li><a href="/Kurumsal/rehberlik-birimi/5">Rehberlik</a></li>
-                    <li><a href="/Kurumsal/gorsel-tasarim-birimi/6">Görsel Tasarım</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Sosyal Medya</h5>
-                <a href="#" class="btn btn-outline-primary me-2"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="btn btn-outline-info"><i class="bi bi-instagram"></i></a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<!-- Bootstrap JS ve Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
