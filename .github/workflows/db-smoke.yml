@@ -1,0 +1,56 @@
+name: DB Smoke Tests
+
+on:
+  pull_request:
+    paths:
+      - 'db/migrations/**'
+      - 'migrations/**'
+      - 'qa/db/**'
+      - '.github/workflows/db-smoke.yml'
+  workflow_dispatch:
+    inputs:
+      migrations_dir:
+        description: 'Directory containing SQL migration files'
+        required: false
+        default: 'db/migrations'
+      require_migrations:
+        description: 'Fail when migrations directory/files are missing'
+        required: false
+        default: 'false'
+
+jobs:
+  db-smoke:
+    name: PostgreSQL migration smoke tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ataakademi_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/ataakademi_test
+      MIGRATIONS_DIR: ${{ inputs.migrations_dir || 'db/migrations' }}
+      REQUIRE_MIGRATIONS: ${{ inputs.require_migrations || 'false' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Run DB smoke tests
+        run: bash qa/db/run-db-smoke.sh
