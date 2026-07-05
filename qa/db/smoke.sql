@@ -25,19 +25,6 @@ AS $$
   );
 $$;
 
-CREATE OR REPLACE FUNCTION pg_temp.column_exists(table_name text, column_name text)
-RETURNS boolean
-LANGUAGE sql
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = $1
-      AND column_name = $2
-  );
-$$;
-
 CREATE OR REPLACE FUNCTION pg_temp.column_not_null(table_name text, column_name text)
 RETURNS boolean
 LANGUAGE sql
@@ -143,8 +130,7 @@ BEGIN
   PERFORM pg_temp.assert_true(pg_temp.has_constraint('leave_requests', 'c'), 'leave_requests must have CHECK/enum constraints for type/status/time range');
 END $$;
 
--- 4. Composite FK existence at table level.
--- This does not trust constraint names; it only confirms FK constraints exist. Cross-tenant behavior is tested with negative writes below.
+-- 4. FK existence at table level. Cross-tenant behavior is proven by negative writes below.
 DO $$
 BEGIN
   PERFORM pg_temp.assert_true(pg_temp.has_constraint('students', 'f'), 'students must have FK constraints');
@@ -220,8 +206,8 @@ BEGIN
 END $$;
 
 -- 7. Behavioral smoke tests.
--- These inserts intentionally use the Faz 1 schema contract. If a migration uses different column names,
--- update this file and the migration contract together; do not weaken the assertions.
+-- These statements intentionally define the Faz 1 DB contract. If migration column names change,
+-- update this test and the migration contract together; do not weaken the assertions.
 DO $$
 DECLARE
   tenant_a uuid := '00000000-0000-0000-0000-00000000000a';
@@ -234,8 +220,10 @@ DECLARE
   course_a uuid := '30000000-0000-0000-0000-00000000000a';
   course_b uuid := '30000000-0000-0000-0000-00000000000b';
   room_a uuid := '40000000-0000-0000-0000-00000000000a';
+  room_a2 uuid := '40000000-0000-0000-0000-0000000000aa';
   room_b uuid := '40000000-0000-0000-0000-00000000000b';
   group_a uuid := '50000000-0000-0000-0000-00000000000a';
+  group_a2 uuid := '50000000-0000-0000-0000-0000000000aa';
   group_b uuid := '50000000-0000-0000-0000-00000000000b';
   student_a uuid := '60000000-0000-0000-0000-00000000000a';
   student_b uuid := '60000000-0000-0000-0000-00000000000b';
@@ -252,7 +240,7 @@ DECLARE
   notif_a uuid := 'b0000000-0000-0000-0000-00000000000a';
   notif_dup uuid := 'b0000000-0000-0000-0000-0000000000aa';
 BEGIN
-  -- Positive seed. These statements define the migration contract for P0 tables.
+  -- Positive seed.
   INSERT INTO tenants (id, name) VALUES (tenant_a, 'Tenant A'), (tenant_b, 'Tenant B');
 
   INSERT INTO users (id, tenant_id, full_name, role, status)
@@ -274,11 +262,13 @@ BEGIN
   INSERT INTO rooms (id, tenant_id, name, capacity, status)
   VALUES
     (room_a, tenant_a, 'Room A', 30, 'active'),
+    (room_a2, tenant_a, 'Room A2', 30, 'active'),
     (room_b, tenant_b, 'Room B', 30, 'active');
 
   INSERT INTO student_groups (id, tenant_id, name, grade_level, status)
   VALUES
     (group_a, tenant_a, 'Group A', '8', 'active'),
+    (group_a2, tenant_a, 'Group A2', '8', 'active'),
     (group_b, tenant_b, 'Group B', '8', 'active');
 
   INSERT INTO students (id, tenant_id, student_group_id, full_name, grade_level, status, parent_name, parent_phone, kvkk_consent_status)
@@ -363,24 +353,22 @@ BEGIN
     NULL;
   END;
 
-  -- Published teacher conflict negative.
+  -- Published teacher conflict negative: same teacher + same slot, but different group and room.
   BEGIN
     INSERT INTO schedule_events (
       id, tenant_id, schedule_id, teacher_id, course_id, student_group_id, room_id,
       day_of_week, start_time, end_time, status
     )
-    VALUES (event_conflict, tenant_a, schedule_a, teacher_a, course_a, group_a, '40000000-0000-0000-0000-0000000000aa', 1, '10:00', '10:50', 'published');
+    VALUES (event_conflict, tenant_a, schedule_a, teacher_a, course_a, group_a2, room_a2, 1, '10:00', '10:50', 'published');
     RAISE EXCEPTION 'published teacher conflict accepted';
-  EXCEPTION WHEN unique_violation OR foreign_key_violation THEN
-    -- unique_violation proves the slot guard; foreign_key_violation means the alternate room was not seeded.
-    -- If this branch is hit by FK, add a second Tenant A room to seed before relying on this specific conflict case.
+  EXCEPTION WHEN unique_violation THEN
     NULL;
   END;
 
   -- Invalid attendance status negative.
   BEGIN
     INSERT INTO attendance_records (id, tenant_id, attendance_session_id, student_id, status, marked_by, marked_at)
-    VALUES ('a0000000-0000-0000-0000-0000000000ac', tenant_a, session_a, student_a, 'unknown', teacher_user_a, now());
+    VALUES ('a0000000-0000-0000-0000-0000000000ac', tenant_a, session_a, student_pending, 'unknown', teacher_user_a, now());
     RAISE EXCEPTION 'invalid attendance status accepted';
   EXCEPTION WHEN check_violation OR invalid_text_representation THEN
     NULL;
@@ -389,7 +377,7 @@ BEGIN
   -- Invalid late_minutes/status combination negative.
   BEGIN
     INSERT INTO attendance_records (id, tenant_id, attendance_session_id, student_id, status, late_minutes, marked_by, marked_at)
-    VALUES ('a0000000-0000-0000-0000-0000000000ad', tenant_a, session_a, student_a, 'present', 15, teacher_user_a, now());
+    VALUES ('a0000000-0000-0000-0000-0000000000ad', tenant_a, session_a, student_pending, 'present', 15, teacher_user_a, now());
     RAISE EXCEPTION 'present attendance with late_minutes accepted';
   EXCEPTION WHEN check_violation THEN
     NULL;
@@ -429,7 +417,7 @@ BEGIN
       'sent', admin_a, now()
     );
     RAISE EXCEPTION 'sent notification accepted for non-approved KVKK consent';
-  EXCEPTION WHEN check_violation OR foreign_key_violation OR raise_exception THEN
+  EXCEPTION WHEN check_violation OR foreign_key_violation THEN
     NULL;
   END;
 END $$;
